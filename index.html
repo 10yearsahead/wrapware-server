@@ -325,6 +325,11 @@
     statusTxt.textContent = 'offline';
     addLog('desconectado do servidor', 'err');
   });
+  socket.on('host-count', (count) => {
+    // Subtraímos 1 para não contar o próprio painel aberto no navegador como um host
+    const displayCount = Math.max(0, count - 1);
+    document.getElementById('hosts').innerHTML = displayCount + '<small>nodes</small>';
+});
 
   // ── Dispatch ──────────────────────────────
   function dispatch(cmd, inputId) {
