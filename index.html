@@ -1,152 +1,351 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WrapWare C2</title>
+<script src="/socket.io/socket.io.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0d0d10;
-  --surface:#13131a;
-  --surface2:#1a1a24;
-  --surface3:#222232;
-  --border:#ffffff0f;
-  --border2:#ffffff18;
-  --accent:#7c6af7;
-  --accent2:#a78bfa;
-  --green:#34d399;
-  --red:#f87171;
-  --text1:#f1f0ff;
-  --text2:#9b99b4;
-  --text3:#5a5870;
-  --font:'Inter',sans-serif;
-  --mono:'JetBrains Mono',monospace;
-}
-.wrap{background:var(--bg);min-height:520px;padding:24px;font-family:var(--font);border-radius:16px}
-.hdr{display:flex;align-items:center;gap:14px;margin-bottom:24px}
-.logo-box{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#3b2fcf,#7c6af7);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-box svg{width:20px;height:20px}
-.hdr-text h1{font-size:15px;font-weight:600;color:var(--text1);letter-spacing:.02em}
-.hdr-text p{font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:.06em;text-transform:uppercase}
-.pill{margin-left:auto;display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:5px 12px}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px #34d39980}
-.dot.off{background:var(--red);box-shadow:0 0 6px #f8717180}
-.pill span{font-size:11px;color:var(--text2);font-family:var(--mono)}
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
-.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
-.stat-val{font-size:22px;font-weight:600;color:var(--text1);font-family:var(--mono)}
-.stat-val small{font-size:11px;font-weight:400;color:var(--text3);margin-left:3px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;transition:border-color .2s}
-.card:hover{border-color:var(--border2)}
-.card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.icon.purple{background:#3b2fcf22;border:1px solid #7c6af730}
-.icon.emerald{background:#05966922;border:1px solid #34d39930}
-.card-lbl{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.08em}
-.card-desc{font-size:11px;color:var(--text3);margin-top:1px}
-.input-row{display:flex;gap:8px}
-.inp{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 13px;font-size:13px;font-family:var(--mono);color:var(--text1);outline:none;transition:border-color .2s}
-.inp::placeholder{color:var(--text3)}
-.inp:focus{border-color:#7c6af750;background:var(--surface3)}
-.btn{padding:9px 18px;border-radius:8px;font-size:12px;font-family:var(--mono);font-weight:500;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;letter-spacing:.04em}
-.btn.v{background:linear-gradient(135deg,#3b2fcf,#7c6af7);color:#fff}
-.btn.v:hover{opacity:.85;transform:translateY(-1px)}
-.btn.g{background:#05966920;border:1px solid #34d39930;color:var(--green)}
-.btn.g:hover{background:#05966935;transform:translateY(-1px)}
-.btn:active{transform:scale(.97)!important}
-.terminal{background:#0a0a0f;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:8px;font-family:var(--mono);font-size:11px;max-height:80px;overflow-y:auto}
-.terminal::-webkit-scrollbar{width:3px}
-.terminal::-webkit-scrollbar-track{background:transparent}
-.terminal::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-.log-row{display:flex;gap:10px;line-height:1.6}
-.ts{color:var(--text3);flex-shrink:0}
-.lmsg{color:#86efac}
-.lmsg.c{color:#a5b4fc}
-.lmsg.e{color:#f87171}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0d0d10;
+    --s1:       #13131a;
+    --s2:       #1a1a24;
+    --s3:       #22223000;
+    --b1:       #ffffff0d;
+    --b2:       #ffffff18;
+    --b3:       #ffffff28;
+    --accent:   #7c6af7;
+    --accent2:  #a78bfa;
+    --green:    #34d399;
+    --red:      #f87171;
+    --amber:    #fbbf24;
+    --t1:       #f1f0ff;
+    --t2:       #9b99b4;
+    --t3:       #4e4c66;
+    --font:     'Inter', sans-serif;
+    --mono:     'JetBrains Mono', monospace;
+    --r:        12px;
+    --r2:       8px;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--t1);
+    font-family: var(--font);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px 48px;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ── Header ── */
+  .hdr {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--b1);
+  }
+  .logo {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3b2fcf, #7c6af7);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo svg { width: 20px; height: 20px; }
+  .hdr-info h1 { font-size: 15px; font-weight: 600; color: var(--t1); letter-spacing: .02em; }
+  .hdr-info p  { font-size: 11px; color: var(--t3); margin-top: 2px; letter-spacing: .07em; text-transform: uppercase; }
+
+  .status-pill {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 7px;
+    background: var(--s2);
+    border: 1px solid var(--b1);
+    border-radius: 99px;
+    padding: 5px 13px;
+  }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 6px #f8717180;
+    transition: background .4s, box-shadow .4s;
+  }
+  .dot.on { background: var(--green); box-shadow: 0 0 6px #34d39980; }
+  .status-pill span {
+    font-size: 11px; font-family: var(--mono); color: var(--t2);
+  }
+
+  /* ── Stats ── */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .stat {
+    background: var(--s1);
+    border: 1px solid var(--b1);
+    border-radius: var(--r);
+    padding: 14px 16px;
+    transition: border-color .2s;
+  }
+  .stat:hover { border-color: var(--b2); }
+  .stat-lbl { font-size: 10px; color: var(--t3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px; }
+  .stat-val { font-size: 22px; font-weight: 600; font-family: var(--mono); color: var(--t1); }
+  .stat-val small { font-size: 11px; font-weight: 400; color: var(--t3); margin-left: 3px; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--s1);
+    border: 1px solid var(--b1);
+    border-radius: var(--r);
+    padding: 18px;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: var(--b2); }
+  .card-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .c-icon {
+    width: 30px; height: 30px; border-radius: var(--r2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .c-icon.purple { background: #3b2fcf18; border: 1px solid #7c6af728; }
+  .c-icon.green  { background: #05966918; border: 1px solid #34d39928; }
+  .c-icon.amber  { background: #f59e0b18; border: 1px solid #fbbf2428; }
+  .card-title { font-size: 11px; font-weight: 500; color: var(--t2); text-transform: uppercase; letter-spacing: .08em; }
+  .card-sub   { font-size: 11px; color: var(--t3); margin-top: 1px; }
+
+  .row { display: flex; gap: 8px; }
+  .inp {
+    flex: 1;
+    background: var(--s2);
+    border: 1px solid var(--b1);
+    border-radius: var(--r2);
+    padding: 9px 13px;
+    font-size: 13px; font-family: var(--mono);
+    color: var(--t1);
+    outline: none;
+    transition: border-color .2s, background .2s;
+  }
+  .inp::placeholder { color: var(--t3); }
+  .inp:focus { border-color: #7c6af750; background: #1e1e2e; }
+
+  .btn {
+    padding: 9px 18px;
+    border-radius: var(--r2);
+    font-size: 12px; font-family: var(--mono); font-weight: 500;
+    cursor: pointer; border: none;
+    transition: all .15s;
+    white-space: nowrap; letter-spacing: .04em;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.purple { background: linear-gradient(135deg,#3b2fcf,#7c6af7); color: #fff; }
+  .btn.purple:hover { opacity: .85; transform: translateY(-1px); }
+  .btn.green  { background: #05966920; border: 1px solid #34d39930; color: var(--green); }
+  .btn.green:hover  { background: #05966935; transform: translateY(-1px); }
+  .btn.amber  { background: #f59e0b20; border: 1px solid #fbbf2430; color: var(--amber); }
+  .btn.amber:hover  { background: #f59e0b35; transform: translateY(-1px); }
+
+  /* ── Terminal log ── */
+  .terminal {
+    background: #08080c;
+    border: 1px solid var(--b1);
+    border-radius: var(--r);
+    padding: 14px 16px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    max-height: 140px;
+    overflow-y: auto;
+    line-height: 1.7;
+  }
+  .terminal::-webkit-scrollbar { width: 3px; }
+  .terminal::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 3px; }
+  .log-row { display: flex; gap: 10px; }
+  .ts  { color: var(--t3); flex-shrink: 0; user-select: none; }
+  .lm  { color: var(--t2); }
+  .lm.cmd  { color: #a5b4fc; }
+  .lm.ok   { color: var(--green); }
+  .lm.err  { color: var(--red); }
+  .lm.warn { color: var(--amber); }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid var(--b1); margin: 2px 0; }
 </style>
-<div class="wrap">
+</head>
+<body>
+<div class="panel">
+
+  <!-- Header -->
   <div class="hdr">
-    <div class="logo-box">
-      <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="2" fill="#fff" opacity=".9"/><rect x="11" y="2" width="7" height="7" rx="2" fill="#fff" opacity=".4"/><rect x="2" y="11" width="7" height="7" rx="2" fill="#fff" opacity=".4"/><rect x="11" y="11" width="7" height="7" rx="2" fill="#fff" opacity=".7"/></svg>
+    <div class="logo">
+      <svg viewBox="0 0 20 20" fill="none">
+        <rect x="2" y="2" width="7" height="7" rx="2" fill="#fff" opacity=".9"/>
+        <rect x="11" y="2" width="7" height="7" rx="2" fill="#fff" opacity=".4"/>
+        <rect x="2" y="11" width="7" height="7" rx="2" fill="#fff" opacity=".4"/>
+        <rect x="11" y="11" width="7" height="7" rx="2" fill="#fff" opacity=".75"/>
+      </svg>
     </div>
-    <div class="hdr-text">
+    <div class="hdr-info">
       <h1>WrapWare</h1>
       <p>C2 Control Panel</p>
     </div>
-    <div class="pill">
-      <div class="dot off" id="dot"></div>
-      <span id="status">offline</span>
+    <div class="status-pill">
+      <div class="dot" id="dot"></div>
+      <span id="statusTxt">offline</span>
     </div>
   </div>
 
+  <!-- Stats -->
   <div class="stats">
-    <div class="stat"><div class="stat-lbl">Hosts ativos</div><div class="stat-val">0<small>nodes</small></div></div>
-    <div class="stat"><div class="stat-lbl">Comandos</div><div class="stat-val" id="cnt">0<small>sent</small></div></div>
-    <div class="stat"><div class="stat-lbl">Sessão</div><div class="stat-val" id="uptime">00:00<small>min</small></div></div>
+    <div class="stat">
+      <div class="stat-lbl">Hosts ativos</div>
+      <div class="stat-val" id="hosts">0<small>nodes</small></div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Comandos</div>
+      <div class="stat-val" id="cmdCount">0<small>sent</small></div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Sessão</div>
+      <div class="stat-val" id="uptime">00:00<small>min</small></div>
+    </div>
   </div>
 
+  <!-- /msg -->
   <div class="card">
     <div class="card-hdr">
-      <div class="icon purple">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3.5h10M2 7h6.5M2 10.5h4" stroke="#a5b4fc" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div class="c-icon purple">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 3.5h10M2 7h6.5M2 10.5h4" stroke="#a5b4fc" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
       </div>
       <div>
-        <div class="card-lbl">/msg</div>
-        <div class="card-desc">Exibe um MessageBox no host remoto</div>
+        <div class="card-title">/msg</div>
+        <div class="card-sub">Exibe MessageBox no host remoto</div>
       </div>
     </div>
-    <div class="input-row">
-      <input class="inp" id="msgInput" placeholder="mensagem para o host...">
-      <button class="btn v" onclick="dispatch('/msg','msgInput')">Enviar</button>
+    <div class="row">
+      <input class="inp" id="msgInput" placeholder="mensagem para o host..." onkeydown="if(event.key==='Enter')dispatch('/msg','msgInput')">
+      <button class="btn purple" onclick="dispatch('/msg','msgInput')">Enviar</button>
     </div>
   </div>
 
+  <!-- /wallpaper -->
   <div class="card">
     <div class="card-hdr">
-      <div class="icon emerald">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="8.5" rx="1.5" stroke="#34d399" stroke-width="1.5"/><path d="M3.5 10.5l.8-2M10.5 10.5l-.8-2" stroke="#34d399" stroke-width="1.5" stroke-linecap="round"/><path d="M1.5 10.5h11" stroke="#34d399" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div class="c-icon green">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="1" y="2" width="12" height="8.5" rx="1.5" stroke="#34d399" stroke-width="1.5"/>
+          <path d="M3.5 10.5l.8-2M10.5 10.5l-.8-2" stroke="#34d399" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M1.5 10.5h11" stroke="#34d399" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
       </div>
       <div>
-        <div class="card-lbl">/wallpaper</div>
-        <div class="card-desc">Troca o wallpaper via URL remota</div>
+        <div class="card-title">/wallpaper</div>
+        <div class="card-sub">Troca o wallpaper via URL remota</div>
       </div>
     </div>
-    <div class="input-row">
-      <input class="inp" id="wallInput" placeholder="https://exemplo.com/imagem.jpg">
-      <button class="btn g" onclick="dispatch('/wallpaper','wallInput')">Aplicar</button>
+    <div class="row">
+      <input class="inp" id="wallInput" placeholder="https://exemplo.com/imagem.jpg" onkeydown="if(event.key==='Enter')dispatch('/wallpaper','wallInput')">
+      <button class="btn green" onclick="dispatch('/wallpaper','wallInput')">Aplicar</button>
     </div>
   </div>
 
+  <!-- /voice -->
+  <div class="card">
+    <div class="card-hdr">
+      <div class="c-icon amber">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="5" y="1" width="4" height="7" rx="2" stroke="#fbbf24" stroke-width="1.5"/>
+          <path d="M2.5 7.5a4.5 4.5 0 009 0" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M7 12v1.5" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="card-title">/voice</div>
+        <div class="card-sub">Envia comando de voz ao host</div>
+      </div>
+    </div>
+    <div class="row">
+      <input class="inp" id="voiceInput" placeholder="texto para sintetizar..." onkeydown="if(event.key==='Enter')dispatch('/voice','voiceInput')">
+      <button class="btn amber" onclick="dispatch('/voice','voiceInput')">Falar</button>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Terminal -->
   <div class="terminal" id="log">
-    <div class="log-row"><span class="ts">--:--:--</span><span class="lmsg">inicializando painel...</span></div>
+    <div class="log-row"><span class="ts">--:--:--</span><span class="lm ok">wrapware c2 iniciado</span></div>
   </div>
+
 </div>
-
 <script>
-let n=0;
-const log=document.getElementById('log');
-const statusEl=document.getElementById('status');
-const dotEl=document.getElementById('dot');
-const cntEl=document.getElementById('cnt');
-const start=Date.now();
+  const socket = io();
+  const dot       = document.getElementById('dot');
+  const statusTxt = document.getElementById('statusTxt');
+  const logEl     = document.getElementById('cmdCount');
+  const logBox    = document.getElementById('log');
+  const startTime = Date.now();
+  let cmdN = 0;
 
-function ts(){const d=new Date();return[d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':')}
-function addLog(msg,cls=''){const r=document.createElement('div');r.className='log-row';r.innerHTML=`<span class="ts">${ts()}</span><span class="lmsg ${cls}">${msg}</span>`;log.appendChild(r);log.scrollTop=log.scrollHeight}
+  // ── Helpers ──────────────────────────────
+  function ts() {
+    const d = new Date();
+    return [d.getHours(), d.getMinutes(), d.getSeconds()]
+      .map(x => String(x).padStart(2,'0')).join(':');
+  }
 
-function dispatch(cmd,id){
-  const v=document.getElementById(id).value.trim();
-  if(!v)return;
-  n++;
-  cntEl.innerHTML=n+'<small>sent</small>';
-  addLog(cmd+' '+v,'c');
-  document.getElementById(id).value='';
-}
+  function addLog(msg, cls='') {
+    const row = document.createElement('div');
+    row.className = 'log-row';
+    row.innerHTML = `<span class="ts">${ts()}</span><span class="lm ${cls}">${msg}</span>`;
+    logBox.appendChild(row);
+    logBox.scrollTop = logBox.scrollHeight;
+  }
 
-setInterval(()=>{
-  const m=Math.floor((Date.now()-start)/60000);
-  const s=Math.floor(((Date.now()-start)%60000)/1000);
-  document.getElementById('uptime').innerHTML=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}<small>min</small>`;
-},1000);
+  // ── Socket events ─────────────────────────
+  socket.on('connect', () => {
+    dot.classList.add('on');
+    statusTxt.textContent = socket.id.slice(0,8) + '…';
+    addLog('conectado ao servidor — ' + socket.id, 'ok');
+  });
 
-setTimeout(()=>{
-  addLog('aguardando servidor socket.io...','e');
-},800);
+  socket.on('disconnect', () => {
+    dot.classList.remove('on');
+    statusTxt.textContent = 'offline';
+    addLog('desconectado do servidor', 'err');
+  });
+
+  // ── Dispatch ──────────────────────────────
+  function dispatch(cmd, inputId) {
+    const val = document.getElementById(inputId).value.trim();
+    if (!val) return;
+    const full = cmd + ' ' + val;
+    socket.emit('send-command', full);
+    cmdN++;
+    logEl.innerHTML = cmdN + '<small>sent</small>';
+    addLog(full, 'cmd');
+    document.getElementById(inputId).value = '';
+  }
+
+  // ── Uptime counter ────────────────────────
+  setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    const m = Math.floor(elapsed / 60000);
+    const s = Math.floor((elapsed % 60000) / 1000);
+    document.getElementById('uptime').innerHTML =
+      String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0') + '<small>min</small>';
+  }, 1000);
 </script>
+</body>
+</html>
