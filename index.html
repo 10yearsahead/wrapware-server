@@ -1,45 +1,133 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>WrapWare Control Panel</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <style>
-        body { font-family: sans-serif; background: #1a1a1a; color: white; padding: 20px; }
-        .card { background: #2d2d2d; padding: 20px; border-radius: 8px; margin-bottom: 10px; }
-        input { width: 80%; padding: 10px; border-radius: 4px; border: none; }
-        button { padding: 10px 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
-        button:hover { background: #0056b3; }
-        .status { color: #00ff00; font-size: 0.8em; }
-    </style>
-</head>
-<body>
-    <h1>WrapWare C2 Panel</h1>
-    <p class="status" id="status">Conectando...</p>
 
-    <div class="card">
-        <h3>Enviar Mensagem (/msg)</h3>
-        <input type="text" id="msgInput" placeholder="Digite a mensagem aqui...">
-        <button onclick="sendCommand('/msg ' + document.getElementById('msgInput').value)">Enviar</button>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-mono, monospace); }
+.panel { padding: 1.5rem 0; }
+.header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.logo { width: 36px; height: 36px; border-radius: 8px; background: #1a1a2e; display: flex; align-items: center; justify-content: center; border: 0.5px solid #3a3a5c; }
+.logo svg { width: 18px; height: 18px; }
+.title-group h1 { font-size: 16px; font-weight: 500; color: var(--color-text-primary); letter-spacing: 0.05em; }
+.title-group p { font-size: 11px; color: var(--color-text-tertiary); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 1px; }
+.status-bar { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.status-text { font-size: 11px; color: var(--color-text-secondary); letter-spacing: 0.05em; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+.stat-label { font-size: 10px; color: var(--color-text-tertiary); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+.stat-value { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+.stat-value span { font-size: 11px; font-weight: 400; color: var(--color-text-secondary); margin-left: 4px; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; }
+.card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.card-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+.card-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); letter-spacing: 0.06em; text-transform: uppercase; }
+.row { display: flex; gap: 8px; }
+.row input { flex: 1; font-size: 13px; font-family: var(--font-mono); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); border-radius: var(--border-radius-md); padding: 8px 12px; outline: none; }
+.row input::placeholder { color: var(--color-text-tertiary); }
+.row input:focus { border-color: var(--color-border-secondary); }
+.btn { padding: 8px 16px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-primary); font-size: 12px; font-family: var(--font-mono); cursor: pointer; white-space: nowrap; letter-spacing: 0.04em; }
+.btn:hover { background: var(--color-background-secondary); }
+.btn:active { transform: scale(0.98); }
+.btn-primary { background: #1a1a2e; color: #a5b4fc; border-color: #3a3a5c; }
+.btn-primary:hover { background: #22224a; }
+.log { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; font-size: 11px; color: var(--color-text-secondary); font-family: var(--font-mono); max-height: 90px; overflow-y: auto; margin-top: 10px; }
+.log-entry { padding: 1px 0; display: flex; gap: 8px; }
+.log-entry .ts { color: var(--color-text-tertiary); min-width: 55px; }
+.log-entry .msg { color: #86efac; }
+.log-entry .msg.cmd { color: #a5b4fc; }
+</style>
+
+<div class="panel">
+  <div class="header">
+    <div class="logo">
+      <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="6" height="6" rx="1" fill="#a5b4fc"/>
+        <rect x="10" y="2" width="6" height="6" rx="1" fill="#6366f1" opacity="0.6"/>
+        <rect x="2" y="10" width="6" height="6" rx="1" fill="#6366f1" opacity="0.6"/>
+        <rect x="10" y="10" width="6" height="6" rx="1" fill="#a5b4fc"/>
+      </svg>
     </div>
-
-    <div class="card">
-        <h3>Trocar Wallpaper (/wallpaper)</h3>
-        <input type="text" id="wallInput" placeholder="URL da imagem (JPG/BMP)...">
-        <button onclick="sendCommand('/wallpaper ' + document.getElementById('wallInput').value)">Aplicar</button>
+    <div class="title-group">
+      <h1>WrapWare</h1>
+      <p>C2 Control Panel</p>
     </div>
+    <div class="status-bar">
+      <div class="dot" id="dot"></div>
+      <span class="status-text" id="status">Conectando...</span>
+    </div>
+  </div>
 
-    <script>
-        const socket = io();
-        const status = document.getElementById('status');
+  <div class="grid">
+    <div class="stat"><div class="stat-label">Agentes online</div><div class="stat-value">0 <span>hosts</span></div></div>
+    <div class="stat"><div class="stat-label">Comandos enviados</div><div class="stat-value" id="cmdCount">0 <span>total</span></div></div>
+  </div>
 
-        socket.on('connect', () => { status.innerText = 'Online - ID: ' + socket.id; });
-        socket.on('disconnect', () => { status.innerText = 'Offline'; });
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#1a1a2e;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3h10M2 7h7M2 11h5" stroke="#a5b4fc" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <span class="card-title">/msg — enviar mensagem</span>
+    </div>
+    <div class="row">
+      <input type="text" id="msgInput" placeholder="Digite a mensagem remota...">
+      <button class="btn btn-primary" onclick="send('/msg', 'msgInput')">Enviar</button>
+    </div>
+  </div>
 
-        function sendCommand(cmd) {
-            console.log('Enviando:', cmd);
-            socket.emit('send-command', cmd);
-            alert('Comando enviado: ' + cmd);
-        }
-    </script>
-</body>
-</html>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#1a2e1a;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="9" rx="1.5" stroke="#86efac" stroke-width="1.5"/><path d="M4 11l1-2M10 11l-1-2" stroke="#86efac" stroke-width="1.5" stroke-linecap="round"/><path d="M2 11h10" stroke="#86efac" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <span class="card-title">/wallpaper — trocar papel de parede</span>
+    </div>
+    <div class="row">
+      <input type="text" id="wallInput" placeholder="URL da imagem (JPG/BMP)...">
+      <button class="btn" style="border-color:#166534;color:#86efac;" onclick="send('/wallpaper', 'wallInput')">Aplicar</button>
+    </div>
+  </div>
+
+  <div class="log" id="log">
+    <div class="log-entry"><span class="ts">--:--:--</span><span class="msg">Aguardando conexão WebSocket...</span></div>
+  </div>
+</div>
+
+<script>
+let count = 0;
+const log = document.getElementById('log');
+const status = document.getElementById('status');
+const dot = document.getElementById('dot');
+const cmdCount = document.getElementById('cmdCount');
+
+function now() {
+  const d = new Date();
+  return [d.getHours(), d.getMinutes(), d.getSeconds()].map(n => String(n).padStart(2,'0')).join(':');
+}
+function addLog(text, isCMD) {
+  const e = document.createElement('div');
+  e.className = 'log-entry';
+  e.innerHTML = `<span class="ts">${now()}</span><span class="msg${isCMD?' cmd':''}">${text}</span>`;
+  log.appendChild(e);
+  log.scrollTop = log.scrollHeight;
+}
+function send(prefix, inputId) {
+  const val = document.getElementById(inputId).value.trim();
+  if (!val) return;
+  count++;
+  cmdCount.textContent = count + ' ';
+  const span = document.createElement('span');
+  span.style.cssText = 'font-size:11px;font-weight:400;color:var(--color-text-secondary)';
+  span.textContent = 'total';
+  cmdCount.appendChild(span);
+  addLog(`${prefix} ${val}`, true);
+  document.getElementById(inputId).value = '';
+  console.log('Enviando:', prefix, val);
+}
+
+setTimeout(() => {
+  status.textContent = 'Offline — sem socket';
+  dot.style.background = '#f87171';
+  addLog('Sem servidor WebSocket neste contexto.', false);
+}, 1200);
+</script>
