@@ -1,133 +1,152 @@
 
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-mono, monospace); }
-.panel { padding: 1.5rem 0; }
-.header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
-.logo { width: 36px; height: 36px; border-radius: 8px; background: #1a1a2e; display: flex; align-items: center; justify-content: center; border: 0.5px solid #3a3a5c; }
-.logo svg { width: 18px; height: 18px; }
-.title-group h1 { font-size: 16px; font-weight: 500; color: var(--color-text-primary); letter-spacing: 0.05em; }
-.title-group p { font-size: 11px; color: var(--color-text-tertiary); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 1px; }
-.status-bar { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-.dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-.status-text { font-size: 11px; color: var(--color-text-secondary); letter-spacing: 0.05em; }
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-.stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
-.stat-label { font-size: 10px; color: var(--color-text-tertiary); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
-.stat-value { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
-.stat-value span { font-size: 11px; font-weight: 400; color: var(--color-text-secondary); margin-left: 4px; }
-.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; }
-.card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.card-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
-.card-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); letter-spacing: 0.06em; text-transform: uppercase; }
-.row { display: flex; gap: 8px; }
-.row input { flex: 1; font-size: 13px; font-family: var(--font-mono); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); border-radius: var(--border-radius-md); padding: 8px 12px; outline: none; }
-.row input::placeholder { color: var(--color-text-tertiary); }
-.row input:focus { border-color: var(--color-border-secondary); }
-.btn { padding: 8px 16px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-primary); font-size: 12px; font-family: var(--font-mono); cursor: pointer; white-space: nowrap; letter-spacing: 0.04em; }
-.btn:hover { background: var(--color-background-secondary); }
-.btn:active { transform: scale(0.98); }
-.btn-primary { background: #1a1a2e; color: #a5b4fc; border-color: #3a3a5c; }
-.btn-primary:hover { background: #22224a; }
-.log { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; font-size: 11px; color: var(--color-text-secondary); font-family: var(--font-mono); max-height: 90px; overflow-y: auto; margin-top: 10px; }
-.log-entry { padding: 1px 0; display: flex; gap: 8px; }
-.log-entry .ts { color: var(--color-text-tertiary); min-width: 55px; }
-.log-entry .msg { color: #86efac; }
-.log-entry .msg.cmd { color: #a5b4fc; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d10;
+  --surface:#13131a;
+  --surface2:#1a1a24;
+  --surface3:#222232;
+  --border:#ffffff0f;
+  --border2:#ffffff18;
+  --accent:#7c6af7;
+  --accent2:#a78bfa;
+  --green:#34d399;
+  --red:#f87171;
+  --text1:#f1f0ff;
+  --text2:#9b99b4;
+  --text3:#5a5870;
+  --font:'Inter',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+.wrap{background:var(--bg);min-height:520px;padding:24px;font-family:var(--font);border-radius:16px}
+.hdr{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.logo-box{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#3b2fcf,#7c6af7);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-box svg{width:20px;height:20px}
+.hdr-text h1{font-size:15px;font-weight:600;color:var(--text1);letter-spacing:.02em}
+.hdr-text p{font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:.06em;text-transform:uppercase}
+.pill{margin-left:auto;display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:5px 12px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px #34d39980}
+.dot.off{background:var(--red);box-shadow:0 0 6px #f8717180}
+.pill span{font-size:11px;color:var(--text2);font-family:var(--mono)}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.stat-val{font-size:22px;font-weight:600;color:var(--text1);font-family:var(--mono)}
+.stat-val small{font-size:11px;font-weight:400;color:var(--text3);margin-left:3px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;transition:border-color .2s}
+.card:hover{border-color:var(--border2)}
+.card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon.purple{background:#3b2fcf22;border:1px solid #7c6af730}
+.icon.emerald{background:#05966922;border:1px solid #34d39930}
+.card-lbl{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.08em}
+.card-desc{font-size:11px;color:var(--text3);margin-top:1px}
+.input-row{display:flex;gap:8px}
+.inp{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 13px;font-size:13px;font-family:var(--mono);color:var(--text1);outline:none;transition:border-color .2s}
+.inp::placeholder{color:var(--text3)}
+.inp:focus{border-color:#7c6af750;background:var(--surface3)}
+.btn{padding:9px 18px;border-radius:8px;font-size:12px;font-family:var(--mono);font-weight:500;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;letter-spacing:.04em}
+.btn.v{background:linear-gradient(135deg,#3b2fcf,#7c6af7);color:#fff}
+.btn.v:hover{opacity:.85;transform:translateY(-1px)}
+.btn.g{background:#05966920;border:1px solid #34d39930;color:var(--green)}
+.btn.g:hover{background:#05966935;transform:translateY(-1px)}
+.btn:active{transform:scale(.97)!important}
+.terminal{background:#0a0a0f;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:8px;font-family:var(--mono);font-size:11px;max-height:80px;overflow-y:auto}
+.terminal::-webkit-scrollbar{width:3px}
+.terminal::-webkit-scrollbar-track{background:transparent}
+.terminal::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.log-row{display:flex;gap:10px;line-height:1.6}
+.ts{color:var(--text3);flex-shrink:0}
+.lmsg{color:#86efac}
+.lmsg.c{color:#a5b4fc}
+.lmsg.e{color:#f87171}
 </style>
-
-<div class="panel">
-  <div class="header">
-    <div class="logo">
-      <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="2" width="6" height="6" rx="1" fill="#a5b4fc"/>
-        <rect x="10" y="2" width="6" height="6" rx="1" fill="#6366f1" opacity="0.6"/>
-        <rect x="2" y="10" width="6" height="6" rx="1" fill="#6366f1" opacity="0.6"/>
-        <rect x="10" y="10" width="6" height="6" rx="1" fill="#a5b4fc"/>
-      </svg>
+<div class="wrap">
+  <div class="hdr">
+    <div class="logo-box">
+      <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="2" fill="#fff" opacity=".9"/><rect x="11" y="2" width="7" height="7" rx="2" fill="#fff" opacity=".4"/><rect x="2" y="11" width="7" height="7" rx="2" fill="#fff" opacity=".4"/><rect x="11" y="11" width="7" height="7" rx="2" fill="#fff" opacity=".7"/></svg>
     </div>
-    <div class="title-group">
+    <div class="hdr-text">
       <h1>WrapWare</h1>
       <p>C2 Control Panel</p>
     </div>
-    <div class="status-bar">
-      <div class="dot" id="dot"></div>
-      <span class="status-text" id="status">Conectando...</span>
+    <div class="pill">
+      <div class="dot off" id="dot"></div>
+      <span id="status">offline</span>
     </div>
   </div>
 
-  <div class="grid">
-    <div class="stat"><div class="stat-label">Agentes online</div><div class="stat-value">0 <span>hosts</span></div></div>
-    <div class="stat"><div class="stat-label">Comandos enviados</div><div class="stat-value" id="cmdCount">0 <span>total</span></div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon" style="background:#1a1a2e;">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3h10M2 7h7M2 11h5" stroke="#a5b4fc" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </div>
-      <span class="card-title">/msg — enviar mensagem</span>
-    </div>
-    <div class="row">
-      <input type="text" id="msgInput" placeholder="Digite a mensagem remota...">
-      <button class="btn btn-primary" onclick="send('/msg', 'msgInput')">Enviar</button>
-    </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-lbl">Hosts ativos</div><div class="stat-val">0<small>nodes</small></div></div>
+    <div class="stat"><div class="stat-lbl">Comandos</div><div class="stat-val" id="cnt">0<small>sent</small></div></div>
+    <div class="stat"><div class="stat-lbl">Sessão</div><div class="stat-val" id="uptime">00:00<small>min</small></div></div>
   </div>
 
   <div class="card">
-    <div class="card-header">
-      <div class="card-icon" style="background:#1a2e1a;">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="9" rx="1.5" stroke="#86efac" stroke-width="1.5"/><path d="M4 11l1-2M10 11l-1-2" stroke="#86efac" stroke-width="1.5" stroke-linecap="round"/><path d="M2 11h10" stroke="#86efac" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <div class="card-hdr">
+      <div class="icon purple">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3.5h10M2 7h6.5M2 10.5h4" stroke="#a5b4fc" stroke-width="1.5" stroke-linecap="round"/></svg>
       </div>
-      <span class="card-title">/wallpaper — trocar papel de parede</span>
+      <div>
+        <div class="card-lbl">/msg</div>
+        <div class="card-desc">Exibe um MessageBox no host remoto</div>
+      </div>
     </div>
-    <div class="row">
-      <input type="text" id="wallInput" placeholder="URL da imagem (JPG/BMP)...">
-      <button class="btn" style="border-color:#166534;color:#86efac;" onclick="send('/wallpaper', 'wallInput')">Aplicar</button>
+    <div class="input-row">
+      <input class="inp" id="msgInput" placeholder="mensagem para o host...">
+      <button class="btn v" onclick="dispatch('/msg','msgInput')">Enviar</button>
     </div>
   </div>
 
-  <div class="log" id="log">
-    <div class="log-entry"><span class="ts">--:--:--</span><span class="msg">Aguardando conexão WebSocket...</span></div>
+  <div class="card">
+    <div class="card-hdr">
+      <div class="icon emerald">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="8.5" rx="1.5" stroke="#34d399" stroke-width="1.5"/><path d="M3.5 10.5l.8-2M10.5 10.5l-.8-2" stroke="#34d399" stroke-width="1.5" stroke-linecap="round"/><path d="M1.5 10.5h11" stroke="#34d399" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="card-lbl">/wallpaper</div>
+        <div class="card-desc">Troca o wallpaper via URL remota</div>
+      </div>
+    </div>
+    <div class="input-row">
+      <input class="inp" id="wallInput" placeholder="https://exemplo.com/imagem.jpg">
+      <button class="btn g" onclick="dispatch('/wallpaper','wallInput')">Aplicar</button>
+    </div>
+  </div>
+
+  <div class="terminal" id="log">
+    <div class="log-row"><span class="ts">--:--:--</span><span class="lmsg">inicializando painel...</span></div>
   </div>
 </div>
 
 <script>
-let count = 0;
-const log = document.getElementById('log');
-const status = document.getElementById('status');
-const dot = document.getElementById('dot');
-const cmdCount = document.getElementById('cmdCount');
+let n=0;
+const log=document.getElementById('log');
+const statusEl=document.getElementById('status');
+const dotEl=document.getElementById('dot');
+const cntEl=document.getElementById('cnt');
+const start=Date.now();
 
-function now() {
-  const d = new Date();
-  return [d.getHours(), d.getMinutes(), d.getSeconds()].map(n => String(n).padStart(2,'0')).join(':');
-}
-function addLog(text, isCMD) {
-  const e = document.createElement('div');
-  e.className = 'log-entry';
-  e.innerHTML = `<span class="ts">${now()}</span><span class="msg${isCMD?' cmd':''}">${text}</span>`;
-  log.appendChild(e);
-  log.scrollTop = log.scrollHeight;
-}
-function send(prefix, inputId) {
-  const val = document.getElementById(inputId).value.trim();
-  if (!val) return;
-  count++;
-  cmdCount.textContent = count + ' ';
-  const span = document.createElement('span');
-  span.style.cssText = 'font-size:11px;font-weight:400;color:var(--color-text-secondary)';
-  span.textContent = 'total';
-  cmdCount.appendChild(span);
-  addLog(`${prefix} ${val}`, true);
-  document.getElementById(inputId).value = '';
-  console.log('Enviando:', prefix, val);
+function ts(){const d=new Date();return[d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':')}
+function addLog(msg,cls=''){const r=document.createElement('div');r.className='log-row';r.innerHTML=`<span class="ts">${ts()}</span><span class="lmsg ${cls}">${msg}</span>`;log.appendChild(r);log.scrollTop=log.scrollHeight}
+
+function dispatch(cmd,id){
+  const v=document.getElementById(id).value.trim();
+  if(!v)return;
+  n++;
+  cntEl.innerHTML=n+'<small>sent</small>';
+  addLog(cmd+' '+v,'c');
+  document.getElementById(id).value='';
 }
 
-setTimeout(() => {
-  status.textContent = 'Offline — sem socket';
-  dot.style.background = '#f87171';
-  addLog('Sem servidor WebSocket neste contexto.', false);
-}, 1200);
+setInterval(()=>{
+  const m=Math.floor((Date.now()-start)/60000);
+  const s=Math.floor(((Date.now()-start)%60000)/1000);
+  document.getElementById('uptime').innerHTML=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}<small>min</small>`;
+},1000);
+
+setTimeout(()=>{
+  addLog('aguardando servidor socket.io...','e');
+},800);
 </script>
