@@ -11,22 +11,23 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', (socket) => {
-    console.log('Novo dispositivo conectado:', socket.id);
+let clientCount = 0;
 
-    // Quando você clica no botão do site, ele envia 'send-command'
+io.on('connection', (socket) => {
+    clientCount++;
+    console.log('Novo dispositivo conectado:', socket.id, '| Total:', clientCount);
+    
+    // Avisa o painel quantos hosts tem
+    io.emit('host-count', clientCount);
+
     socket.on('send-command', (data) => {
         console.log('Comando recebido do painel:', data);
-        // Repassa o comando para TODOS os outros conectados (incluindo o C++)
         socket.broadcast.emit('execute', data);
     });
 
     socket.on('disconnect', () => {
-        console.log('Dispositivo desconectado');
+        clientCount--;
+        console.log('Dispositivo desconectado | Total:', clientCount);
+        io.emit('host-count', clientCount);
     });
-});
-
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
 });
