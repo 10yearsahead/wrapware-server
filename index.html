@@ -222,18 +222,30 @@
 
   <div class="card">
     <div class="card-hdr">
-        <div class="c-icon amber"><svg>...</svg></div>
-        <div><div class="card-title">Gerenciamento de Processos</div></div>
+      <div class="c-icon amber">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+      </div>
+      <div>
+        <div class="card-title">Gerenciamento de Processos</div>
+        <div class="card-sub">Matar, iniciar, screenshot e lista alfabética no host</div>
+      </div>
     </div>
     <div class="row" style="margin-bottom: 10px;">
-        <input class="inp" id="killInput" placeholder="ex: chrome.exe">
-        <button class="btn amber" onclick="dispatch('/kill','killInput')">Matar</button>
+      <input class="inp" id="killInput" placeholder="ex: chrome.exe" onkeydown="if(event.key==='Enter')dispatch('/kill','killInput')">
+      <button class="btn amber" onclick="dispatch('/kill','killInput')">Matar</button>
+    </div>
+    <div class="row" style="margin-bottom: 10px;">
+      <input class="inp" id="startInput" placeholder="ex: notepad.exe" onkeydown="if(event.key==='Enter')dispatch('/start','startInput')">
+      <button class="btn green" onclick="dispatch('/start','startInput')">Iniciar</button>
     </div>
     <div class="row">
-        <input class="inp" id="startInput" placeholder="ex: notepad.exe">
-        <button class="btn green" onclick="dispatch('/start','startInput')">Iniciar</button>
+      <button type="button" class="btn green" style="flex:1" onclick="sendRaw('/screenshot')">Tirar Screenshot</button>
+      <button type="button" class="btn amber" style="flex:1" onclick="sendRaw('/list')">Listar Processos</button>
     </div>
-</div>
+  </div>
 
   <!-- /msg -->
   <div class="card">
@@ -297,60 +309,23 @@
   </div>
 
   <div class="card">
-  <div class="card-hdr">
-    <div class="c-icon purple"><svg>...</svg></div>
-    <div><div class="card-title">/open</div></div>
-  </div>
-  <div class="row">
-    <input class="inp" id="openInput" placeholder="https://google.com">
-    <button class="btn purple" onclick="dispatch('/open','openInput')">Abrir</button>
-  </div>
-</div>
-
-<!-- /kill -->
-<div class="card">
-  <div class="card-hdr">
-    <div class="c-icon amber">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="15" y1="9" x2="9" y2="15"></line>
-        <line x1="9" y1="9" x2="15" y2="15"></line>
-      </svg>
+    <div class="card-hdr">
+      <div class="c-icon purple">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M3 4h8M3 7h5M3 10h6" stroke="#a5b4fc" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="11" cy="10" r="2" stroke="#a5b4fc" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="card-title">/open</div>
+        <div class="card-sub">Abre URL ou caminho no host remoto</div>
+      </div>
     </div>
-    <div>
-      <div class="card-title">/kill</div>
-      <div class="card-sub">Finaliza um processo (ex: chrome.exe)</div>
+    <div class="row">
+      <input class="inp" id="openInput" placeholder="URL ou caminho no host..." onkeydown="if(event.key==='Enter')dispatch('/open','openInput')">
+      <button type="button" class="btn purple" onclick="dispatch('/open','openInput')">Abrir</button>
     </div>
   </div>
-  <div class="row">
-    <input class="inp" id="killInput" placeholder="nome_do_processo.exe" onkeydown="if(event.key==='Enter')dispatch('/kill','killInput')">
-    <button class="btn amber" onclick="dispatch('/kill','killInput')">Matar</button>
-  </div>
-</div>
-
-<!-- /start -->
-<div class="card">
-  <div class="card-hdr">
-    <div class="c-icon green">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2">
-        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-      </svg>
-    </div>
-    <div>
-      <div class="card-title">/start</div>
-      <div class="card-sub">Inicia um programa ou arquivo</div>
-    </div>
-  </div>
-  <div class="row">
-    <input class="inp" id="startInput" placeholder="notepad.exe ou url" onkeydown="if(event.key==='Enter')dispatch('/start','startInput')">
-    <button class="btn green" onclick="dispatch('/start','startInput')">Iniciar</button>
-  </div>
-</div>
-
-<div class="row" style="margin-top: 10px;">
-  <button class="btn green" style="flex:1" onclick="socket.emit('send-command', '/screenshot')">Tirar Screenshot</button>
-  <button class="btn amber" style="flex:1" onclick="socket.emit('send-command', '/list')">Listar Processos</button>
-</div>
 
   <hr class="divider">
 
@@ -364,7 +339,7 @@
   const socket = io();
   const dot       = document.getElementById('dot');
   const statusTxt = document.getElementById('statusTxt');
-  const logEl     = document.getElementById('cmdCount');
+  const cmdCountEl = document.getElementById('cmdCount');
   const logBox    = document.getElementById('log');
   const startTime = Date.now();
   let cmdN = 0;
@@ -400,7 +375,7 @@
     // Subtraímos 1 para não contar o próprio painel aberto no navegador como um host
     const displayCount = Math.max(0, count - 1);
     document.getElementById('hosts').innerHTML = displayCount + '<small>nodes</small>';
-});
+  });
 
   // ── Dispatch ──────────────────────────────
   function dispatch(cmd, inputId) {
@@ -409,9 +384,16 @@
     const full = cmd + ' ' + val;
     socket.emit('send-command', full);
     cmdN++;
-    logEl.innerHTML = cmdN + '<small>sent</small>';
+    cmdCountEl.innerHTML = cmdN + '<small>sent</small>';
     addLog(full, 'cmd');
     document.getElementById(inputId).value = '';
+  }
+
+  function sendRaw(cmd) {
+    socket.emit('send-command', cmd);
+    cmdN++;
+    cmdCountEl.innerHTML = cmdN + '<small>sent</small>';
+    addLog(cmd, 'cmd');
   }
 
   // ── Uptime counter ────────────────────────
