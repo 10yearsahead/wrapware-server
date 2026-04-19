@@ -220,6 +220,21 @@
     </div>
   </div>
 
+  <div class="card">
+    <div class="card-hdr">
+        <div class="c-icon amber"><svg>...</svg></div>
+        <div><div class="card-title">Gerenciamento de Processos</div></div>
+    </div>
+    <div class="row" style="margin-bottom: 10px;">
+        <input class="inp" id="killInput" placeholder="ex: chrome.exe">
+        <button class="btn amber" onclick="dispatch('/kill','killInput')">Matar</button>
+    </div>
+    <div class="row">
+        <input class="inp" id="startInput" placeholder="ex: notepad.exe">
+        <button class="btn green" onclick="dispatch('/start','startInput')">Iniciar</button>
+    </div>
+</div>
+
   <!-- /msg -->
   <div class="card">
     <div class="card-hdr">
