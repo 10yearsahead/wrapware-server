@@ -281,6 +281,22 @@
     </div>
   </div>
 
+  <div class="card">
+  <div class="card-hdr">
+    <div class="c-icon purple"><svg>...</svg></div>
+    <div><div class="card-title">/open</div></div>
+  </div>
+  <div class="row">
+    <input class="inp" id="openInput" placeholder="https://google.com">
+    <button class="btn purple" onclick="dispatch('/open','openInput')">Abrir</button>
+  </div>
+</div>
+
+<div class="row" style="margin-top: 10px;">
+  <button class="btn green" style="flex:1" onclick="socket.emit('send-command', '/screenshot')">Tirar Screenshot</button>
+  <button class="btn amber" style="flex:1" onclick="socket.emit('send-command', '/list')">Listar Processos</button>
+</div>
+
   <hr class="divider">
 
   <!-- Terminal -->
